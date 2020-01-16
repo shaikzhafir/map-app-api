@@ -6,12 +6,33 @@ class LocationController {
     async index({ response} ){
         
         const location = await Location.all()
+        const jsonData = await location.toJSON()
+       
+       
+        //declare an array to put all the diff objects 
+        const allLocation = []
 
-       // console.log(location[1].name)
+       //this function retrieves data from db to format as geojson 
+       jsonData.forEach(function(data){
+           
+           allLocation.push({
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [data.lon, data.lat]
+            },
+            "properties": {
+            "name": data.name,
+            "description" : data.description
+
+            } 
+           })
+
+        })
 
         response.json({
             message : "list of all locations",
-            data : location.toJSON()
+            data : allLocation
         })
 
         
